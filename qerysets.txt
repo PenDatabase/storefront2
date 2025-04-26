@@ -1,0 +1,125 @@
+    # Products: inventory < 10 and price is not < 20
+    query_set = Product.objects.filter(
+        Q(inventory__lt=10) & ~Q(unit_price__lt=20))
+    # Products: inventory = unit_price
+    # query_set = Product.objects.filter(inventory=F('collection_id'))
+
+    # Products: sorting
+    # query_set = Product.objects.order_by('unit_price')[0]
+    #             Product.objects.earliest('unit_price')
+
+    # limiting results
+    # query_set = Product.objects.all()[3:10]
+
+    # Selecting fields to query
+    # query_set = Product.objects.filter(
+    #     id__in=OrderItem.objects.values('product_id').distinct()).order_by('title')
+
+    # using only and defer which returns objects hence
+    # it performs extra queries if an unexpected field is asked for in the frontend
+    # query_set = Product.objects.only('id', 'title')  -- select id, title fields only
+    # query_set = Product.objects.defer('description') -- don't select description only
+
+    # Select related objects
+    # select related (1) instance
+    # prefectch related (many) instance
+    # query_set = Product.objects.select_related('collection').prefetch_related('promotions').all()
+
+    # select last 5 orders with their customers and items
+    # query_set = Order.objects.select_related('customer').prefetch_related('orderitem_set__product').order_by('-placed_at')[:5]
+
+    # aggregating objects
+    # query_set = Product.objects.filter(collection__id=3).aggregate(total=Avg('unit_price'), 
+                                        # min_price=Min('unit_price'))
+    
+    # annotating objects
+    # query_set = Product.objects.annotate(new_id=F('id') + 1)
+
+    # calling database fucnction - concat
+    # first method
+    # query_set = Customer.objects.annotate(
+    #     # CONCAT
+    #     full_name = Func(F('first_name'), Value(' '), F('last_name'), function='CONCAT')
+    # )
+    # # second method
+    # query_set = Customer.objects.annotate(
+    #     full_name = Concat('first_name', Value(' '), 'last_name')
+    # )
+
+    # Grouping Data
+    # query_set = Customer.objects.annotate(
+    #     order_count = Count('order')
+    # )
+
+    # Working with expression wrappers
+    # discounted_price = ExpressionWrapper(F('unit_price') * 0.8, output_field=DecimalField())
+    # query_set = Product.objects.annotate(
+    #     discounted_price = discounted_price
+    # )
+
+    # exercise - customers with .com accounts
+    # query_set = Customer.objects.filter(email__endswith='.com')
+
+    # exercise - collections which do not have a featured product
+    # query_set = Collection.objects.filter(featured_product__isnull=True)
+
+    # exercise - product with low inventory( < 10)
+    # query_set = Product.objects.filter(inventory__lt=10)
+
+    # exercise - Orders placed by customer with id = 1
+    # query_set = Order.objects.filter(customer__id=1)
+
+    # exercise - Order items for products in collection 3
+    # query_set = OrderItem.objects.filter(product__collection__id=3)
+
+    # Querying generic relationship
+    # query_set = TaggedItem.objects.get_tags_for(Product, 1)
+
+    # query_set = Product.objects.all()
+    # query_set[0]
+    # list(query_set)
+
+    # Creating Objects
+    # collection = Collection()
+    # collection.title = 'Video Games'
+    # collection.featured_product = Product(pk=1)
+    # collection.save()
+    #
+    # or use Collection.objects.create()
+
+    # Updating objects
+    # collection = Collection.objects.get(pk=11)
+    # collection.title = "Games"
+    # collection.featured_product = Product(2)
+    # collection.save()
+    #
+    # or use Collection.objects.filter(pk=11).update(title="Games") -- don't use objects.get
+
+    # Deleting objects (single)
+    # collection = Collection(pk=11)
+    # collection.delete()
+
+    # Deleting objects(Multiple)
+    # Collection.objects.filter(id__gt=5).delete()
+
+    # Transactions: you can use @transaction.atomic on a view or you can try this:
+    # with transaction.atomic():
+    #     order = Order()
+    #     order.customer_id = 1
+    #     order.save()
+
+    #     item = OrderItem()
+    #     item.order = order
+    #     item.product_id = 1
+    #     item.quantity = 10
+    #     item.unit_price = 20
+    #     item.save()
+
+    # Executing raw sql queries
+    # using model approach
+    # query_set = Product.objects.raw("SELECT * FROM store_product")
+    # using cursor approach
+    # with connection.cursor() as cursor:
+    #     cursor.execute("SELECT * FROM store_collection \
+    #                     ")
+    #     query_set = cursor.fetchall()
