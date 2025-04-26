@@ -5,20 +5,12 @@ from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin, DestroyModelMixin, UpdateModelMixin, ListModelMixin
-<<<<<<< HEAD
 from rest_framework.permissions import IsAdminUser, IsAuthenticated, AllowAny
-=======
-from rest_framework.permissions import IsAdminUser
->>>>>>> ef51715 (feat:implemented order endpoint(listing) and added seed.py for db)
 from rest_framework import status
 from .filters import ProductFilter
 from .pagination import DefaultPagination
 from .models import Cart, CartItem, Collection, Customer, Order, OrderItem, Product, Review
-<<<<<<< HEAD
 from .serializers import AddCartItemSerializer, CartItemSerializer, CartSerializer, CollectionSerializer, OrderCreateSerializer, OrderSerializer, ProductSerializer, ReviewSerializer, UpdateCartItemSerializer, CustomerSerializer
-=======
-from .serializers import AddCartItemSerializer, CartItemSerializer, CartSerializer, CollectionSerializer, OrderSerializer, ProductSerializer, ReviewSerializer, UpdateCartItemSerializer, CustomerSerializer
->>>>>>> ef51715 (feat:implemented order endpoint(listing) and added seed.py for db)
 
 
 class ProductViewSet(ModelViewSet):
@@ -139,8 +131,18 @@ class OrderViewSet(ListModelMixin,
     
     def get_serializer_class(self):
         if self.request.method == "POST":
-            return OrderCreateSerializer
+            return OrderCreateSerializer #for sanitizing input
         return OrderSerializer
     
     def get_serializer_context(self):
         return {'user_id': self.request.user.id}
+    
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(
+            data=request.data,
+        )
+        serializer.is_valid(raise_exception=True)
+        order = serializer.save()
+        serializer = OrderSerializer(order) # change serializer after saving to return order
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

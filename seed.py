@@ -31,8 +31,14 @@ def create_users(n=5):
             first_name=first_name, last_name=last_name
         )
         users.append(user)
-    admin = User.objects.get(id=1)
-    users.append(admin)
+    # Include admin user in operations as well...
+    admin = User.objects.filter(id=1)
+    if admin is None:
+        admin = User.objects.create_superuser(username=admin,
+                                      password="admin")
+        users.append(admin)
+    else:
+        users.append(admin.get())
     return users
 
 def create_promotions(n=3):

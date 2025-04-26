@@ -138,7 +138,8 @@ class OrderCreateSerializer(serializers.Serializer):
     def create(self, validated_data):
         with transaction.atomic():
             cart_id = validated_data["cart_id"]
-            customer, created = Customer.objects.get_or_create(user_id=self.context["user_id"])
+            user_id = self.context["user_id"]
+            customer, created = Customer.objects.get_or_create(user_id=user_id)
             order = Order.objects.create(customer=customer)
 
             cartitems = CartItem.objects.\
@@ -158,4 +159,4 @@ class OrderCreateSerializer(serializers.Serializer):
             
             # Delete Cart
             Cart.objects.get(pk=cart_id).delete()
-        return {"cart_id": validated_data["cart_id"]}
+        return order
