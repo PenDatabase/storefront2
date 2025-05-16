@@ -98,7 +98,6 @@ class CustomerViewSet(CreateModelMixin,
                       GenericViewSet):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
-    permission_classes = [IsAdminUser]
 
     @action(detail=False, methods=['GET', 'PUT', 'PATCH'])
     def me(self, request):
@@ -117,15 +116,14 @@ class CustomerViewSet(CreateModelMixin,
 
 
 
-class OrderViewSet(ListModelMixin,
-                   CreateModelMixin,
-                   GenericViewSet):
-    permission_classes = [IsAuthenticated]
+class OrderViewSet(ModelViewSet):
+    http_method_names = ['get', 'post', 'patch', 'delete', 'head', 'options']
 
     def get_queryset(self):
         user = self.request.user
         if user.is_staff:
             return Order.objects.all()
+        
         customer_id, created = Customer.objects.only('id').get_or_create(user_id=user.id)
         return Order.objects.filter(customer_id=customer_id)
     
@@ -136,7 +134,12 @@ class OrderViewSet(ListModelMixin,
     
     def get_serializer_context(self):
         return {'user_id': self.request.user.id}
-    
+
+    def get_permissions(self):
+        if self.request.method in ['PATCH', 'DELETE']:
+            return [IsAdminUser()]
+        return [IsAuthenticated()]
+        
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(
             data=request.data,

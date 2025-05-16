@@ -15,6 +15,7 @@ from store.models import (
     Customer, Order, OrderItem,
     Address, Cart, CartItem, Review
 )
+from django.db import transaction
 
 User = get_user_model()
 faker = Faker()
@@ -32,13 +33,13 @@ def create_users(n=5):
         )
         users.append(user)
     # Include admin user in operations as well...
-    admin = User.objects.filter(id=1)
+    admin = User.objects.filter(id=1).first()
     if admin is None:
-        admin = User.objects.create_superuser(username=admin,
+        admin = User.objects.create_superuser(username="admin",
                                       password="admin")
         users.append(admin)
     else:
-        users.append(admin.get())
+        users.append(admin)
     return users
 
 def create_promotions(n=3):
@@ -78,17 +79,11 @@ def create_products(n=10, collections=None, promotions=None):
         collection.save()
     return products
 
-def create_customers(users):
+def get_customers(users):
     customers = []
     for user in users:
-        if user.id != 1:
-            customer = Customer.objects.create(
-                user=user,
-                phone=faker.phone_number(),
-                birth_date=faker.date_of_birth(minimum_age=18, maximum_age=60),
-                membership=random.choice(['B', 'S', 'G'])
-            )
-            customers.append(customer)
+        # Customers are automatically created when users are because of signals
+        customers.append(Customer.objects.get(user=user))
     return customers
 
 def create_orders(customers, products, n=5):
@@ -138,15 +133,15 @@ def create_reviews(products):
 
 if __name__ == "__main__":
     print("Seeding database...")
+    with transaction.atomic():
+        users = create_users()
+        promotions = create_promotions()
+        collections = create_collections()
+        products = create_products(collections=collections, promotions=promotions)
+        customers = get_customers(users)
+        create_addresses(customers)
+        create_orders(customers, products)
+        create_carts_and_items(products)
+        create_reviews(products)
 
-    users = create_users()
-    promotions = create_promotions()
-    collections = create_collections()
-    products = create_products(collections=collections, promotions=promotions)
-    customers = create_customers(users)
-    create_addresses(customers)
-    create_orders(customers, products)
-    create_carts_and_items(products)
-    create_reviews(products)
-
-    print("✅ Seeding complete!")
+        print("✅ Seeding complete!")
