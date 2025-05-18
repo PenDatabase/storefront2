@@ -114,13 +114,19 @@ def create_addresses(customers):
 
 def create_carts_and_items(products, n=3):
     for _ in range(n):
-        cart = Cart.objects.create(id=uuid4())
+        id = uuid4()
+        if id in Cart.objects.values_list('id', flat=True):
+            continue
+        cart = Cart.objects.create(id=id)
         for _ in range(random.randint(1, 4)):
+            product = random.choice(products)
             CartItem.objects.create(
                 cart=cart,
-                product=random.choice(products),
+                product= product,
                 quantity=random.randint(1, 5)
             )
+            products.remove(product)  # Avoid duplicates in the same cart
+
 
 def create_reviews(products):
     for product in products:

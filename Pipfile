@@ -17,6 +17,7 @@ django = "*"
 djoser = "*"
 djangorestframework-simplejwt = "*"
 social-auth-app-django = "*"
+whitenoise = "*"
 
 [dev-packages]
 
