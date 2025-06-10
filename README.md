@@ -1,42 +1,52 @@
-Sure! Here's a complete `README.md` file for your Django project based on the provided `requirements.txt` and usage instructions:
 
 ---
 
 ````markdown
-# Django Project
+# FollowUp Buddy
 
-This is a Django-based web application powered by Django REST Framework (DRF) and social authentication libraries. It includes user authentication using JWT, nested routing, admin tools, and more.
+**FollowUp Buddy** is a Django-based web application that helps users track evangelism efforts and follow-up activities. Built using Django templates (not DRF), it offers a simple, user-friendly interface to stay intentional and accountable in soul-winning.
 
-## Features
+---
 
-- Django 5.2.1 with DRF (Django REST Framework)
-- JWT Authentication using `djangorestframework-simplejwt` and `djoser`
-- Social authentication via `social-auth-app-django`
-- API filtering with `django-filter`
-- Debugging with `django-debug-toolbar`
-- Faker library for mock/test data
-- Default SQLite database setup
-- Nested routers for cleaner API design
+## ✨ Features
 
-## Requirements
+- Log and manage evangelism records
+- Schedule and monitor follow-up progress
+- Beautiful admin interface powered by [Jazzmin](https://github.com/farridav/django-jazzmin)
+- Form customization with `django-widget-tweaks`
+- Debugging tools with `django-debug-toolbar`
+- Preload test data with a single command
+- Uses default SQLite database (no external DB setup needed)
 
-Python 3.10+  
-All Python dependencies are listed in `requirements.txt`.
+---
 
-## Getting Started
+## 🛠 Requirements
 
-Follow these steps to run the project locally.
+- Python 3.10 or higher
+- Django 5.2.1
+- All dependencies listed in `requirements.txt`
+
+---
+
+## 📦 Tech Stack
+
+- **Framework**: Django (Template-based)
+- **Database**: SQLite (default)
+- **UI**: HTML/CSS with Django Templates
+- **Admin Dashboard**: Jazzmin
+
+---
+
+## 🧪 Installation Guide
 
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/your-django-project.git
-cd your-django-project
+git clone https://github.com/your-username/followup-buddy.git
+cd followup-buddy
 ````
 
 ### 2. Create a Virtual Environment
-
-Use `venv`, `virtualenv`, or `Pipenv` to manage your environment.
 
 ```bash
 python -m venv venv
@@ -49,70 +59,79 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 4. Apply Migrations
+### 4. Run Database Migrations
 
 ```bash
 python manage.py migrate
 ```
 
-### 5. Create a Superuser (Optional)
+### 5. Create an Admin User
+
+To explore the admin panel and play around with the system:
 
 ```bash
 python manage.py createsuperuser
 ```
 
-### 6. Run the Development Server
+Then visit [http://127.0.0.1:8000/admin](http://127.0.0.1:8000/admin) and log in using the credentials you just created.
+
+### 6. Populate the Database with Sample Data
+
+Optionally, seed the database with mock evangelism and follow-up entries:
+
+```bash
+python seed.py
+```
+
+### 7. Start the Development Server
 
 ```bash
 python manage.py runserver
 ```
 
-Visit [http://127.0.0.1:8000](http://127.0.0.1:8000) in your browser.
+Then open [http://127.0.0.1:8000](http://127.0.0.1:8000) in your browser.
 
-## Environment
+---
 
-* **Database:** Uses SQLite (default). No setup needed.
-* **Static Files:** Managed by Django’s default static file system.
-* **Debug Mode:** Make sure `DEBUG = True` in `settings.py` for development.
+## 🗂 Project Structure Overview
 
-## API Authentication
-
-* JWT-based auth via [SimpleJWT](https://django-rest-framework-simplejwt.readthedocs.io/)
-* Endpoints available through [Djoser](https://djoser.readthedocs.io/)
-* Optional social login integration via:
-
-  * Google
-  * Facebook
-  * GitHub (depending on your settings)
-
-## Debugging
-
-The `django-debug-toolbar` is installed and enabled for development purposes. Make sure `INTERNAL_IPS` is set correctly in your `settings.py`.
-
-## Testing Data
-
-You can use the `Faker` library to seed mock data for development/testing.
-
-## Contributing
-
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
-## License
-
-[MIT License](LICENSE)
-
-## Acknowledgements
-
-* [Django](https://www.djangoproject.com/)
-* [Django REST Framework](https://www.django-rest-framework.org/)
-* [Djoser](https://github.com/sunscrapers/djoser)
-* [SimpleJWT](https://github.com/jazzband/django-rest-framework-simplejwt)
-* [Faker](https://faker.readthedocs.io/)
-* [Social Auth](https://github.com/python-social-auth/social-app-django)
-
+```
+followup_buddy/
+├── evangelism/             # Core app logic
+├── templates/              # HTML templates
+├── static/                 # CSS/JS assets (optional)
+├── seed.py                 # Database seeding script
+├── db.sqlite3              # Default SQLite database
+├── manage.py
+└── requirements.txt
 ```
 
 ---
 
-Let me know if you'd like to include example `.env` setup, Postman collection export, or endpoint documentation in the README too.
-```
+## 🛠 Development Tools
+
+* **django-debug-toolbar** – Inspect queries, cache, and templates
+* **django-widget-tweaks** – Easily customize forms in HTML
+* **django-jazzmin** – Stylish and modern admin interface
+
+---
+
+## 🙌 Contribution
+
+We welcome contributions and suggestions! Feel free to fork the repository and submit a pull request, or open an issue to propose new features or bug fixes.
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License**.
+
+---
+
+## ✝️ Inspiration
+
+> *“Go therefore and make disciples of all nations...”* — **Matthew 28:19**
+
+**FollowUp Buddy** helps believers act on the Great Commission with intentionality by tracking outreach and nurturing follow-up.
+
+---
