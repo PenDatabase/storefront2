@@ -41,3 +41,8 @@ Thumbs.db
 
 # Work files
 user/
+
+#Docker Files
+Dockerfile
+docker-compose.yml
+*.dockerignore

@@ -18,6 +18,7 @@ djoser = "*"
 djangorestframework-simplejwt = "*"
 social-auth-app-django = "*"
 whitenoise = "*"
+drf-yasg = "*"
 
 [dev-packages]
 
